@@ -56,6 +56,8 @@ Save the job.
 
 Trigger builds manually or set up GitHub webhooks for auto-triggering (requires public Jenkins server).
 
+JENKINS URL - http://localhost:8080/job/Python-AutomationPipeline/ for reference.
+
 
 
 ✅ Issues We Faced & Fixes
