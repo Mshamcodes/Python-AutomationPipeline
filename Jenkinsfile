@@ -1,36 +1,24 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.13.2'  // Docker agent with Python & pip pre-installed
-        }
-    }
+    agent any
 
     stages {
-        stage('Checkout') {
+        stage('Checkout stage') {
             steps {
-                checkout scm  // Pulls from GitHub
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Mshamcodes/Python-AutomationPipeline.git']])
             }
         }
-
-        stage('Install dependencies') {
+        stage('Build') {
             steps {
-                sh 'pip install -r requirements.txt'
+                git branch: 'main', url: 'https://github.com/Mshamcodes/Python-AutomationPipeline.git'
+                sh 'python3 src/arithmetic_operations.py'
             }
         }
-
-        stage('Run Pytest') {
+        stage('RUN tests') {
             steps {
-                // Ensure test-results folder exists
-                sh 'mkdir -p test-results'
-                // Run Pytest and export JUnit XML report
-                sh 'pytest src/test_automation.py --junitxml=test-results/report.xml'
-            }
-        }
-
-        stage('Publish Test Report') {
-            steps {
-                // Let Jenkins read the test report
-                junit 'test-results/report.xml'
+                sh '''
+                    mkdir -p test-results
+                    python3 -m pytest -v src/test_arithmetic_operations.py --junitxml=test-results/report.xml
+                '''
             }
         }
     }
